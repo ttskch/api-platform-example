@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Comment\CollectionPostController;
 use App\Controller\Comment\ItemBanController;
@@ -21,10 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
     ],
     itemOperations: [
-        'get',
-        'put',
-        'patch',
-        'delete',
+        'get' => [
+            'controller' => NotFoundAction::class,
+            'read' => false,
+            'output' => false,
+        ],
         'ban' => [
             'method' => 'put',
             'path' => '/comments/{id}/ban',
