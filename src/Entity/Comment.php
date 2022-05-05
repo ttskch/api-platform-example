@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Comment\CollectionPostController;
+use App\Controller\Comment\ItemBanController;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,6 +18,18 @@ use Symfony\Component\Validator\Constraints as Assert;
         'post' => [
             'path' => '/posts/{id}/comments',
             'controller' => CollectionPostController::class,
+        ],
+    ],
+    itemOperations: [
+        'get',
+        'put',
+        'patch',
+        'delete',
+        'ban' => [
+            'method' => 'put',
+            'path' => '/comments/{id}/ban',
+            'controller' => ItemBanController::class,
+            'input' => false,
         ],
     ],
 )]
@@ -35,6 +48,9 @@ class Comment
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
     private string $body = '';
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBanned = false;
 
     public function getId(): ?int
     {
@@ -61,6 +77,18 @@ class Comment
     public function setBody(string $body): self
     {
         $this->body = $body;
+
+        return $this;
+    }
+
+    public function getIsBanned(): bool
+    {
+        return $this->isBanned;
+    }
+
+    public function setIsBanned(bool $isBanned): self
+    {
+        $this->isBanned = $isBanned;
 
         return $this;
     }
