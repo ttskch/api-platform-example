@@ -1,4 +1,7 @@
 App\Entity\Comment:
+  attributes:
+    route_prefix: /v1
+
   collectionOperations:
     get: ~
     post:

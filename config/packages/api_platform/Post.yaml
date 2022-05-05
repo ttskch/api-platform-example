@@ -1,1 +1,3 @@
-App\Entity\Post: ~
+App\Entity\Post:
+  attributes:
+    route_prefix: /v1
