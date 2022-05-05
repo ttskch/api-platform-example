@@ -4,40 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Action\NotFoundAction;
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\Comment\CollectionPostController;
-use App\Controller\Comment\ItemBanController;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-#[ApiResource(
-    collectionOperations: [
-        'get',
-        'post' => [
-            'path' => '/posts/{id}/comments',
-            'controller' => CollectionPostController::class,
-        ],
-    ],
-    itemOperations: [
-        'get' => [
-            'controller' => NotFoundAction::class,
-            'read' => false,
-            'output' => false,
-            'openapi_context' => [
-                'description' => '#hidden',
-            ],
-        ],
-        'ban' => [
-            'method' => 'put',
-            'path' => '/comments/{id}/ban',
-            'controller' => ItemBanController::class,
-            'input' => false,
-        ],
-    ],
-)]
 class Comment
 {
     #[ORM\Id]

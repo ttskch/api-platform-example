@@ -1,0 +1,19 @@
+App\Entity\Comment:
+  collectionOperations:
+    get: ~
+    post:
+      path: /posts/{id}/comments
+      controller: App\Controller\Comment\CollectionPostController
+
+  itemOperations:
+    get:
+      controller: ApiPlatform\Core\Action\NotFoundAction
+      read: false
+      output: false
+      openapi_context:
+        description: '#hidden'
+    ban:
+      method: put
+      path: /comments/{id}/ban
+      controller: App\Controller\Comment\ItemBanController
+      input: false
