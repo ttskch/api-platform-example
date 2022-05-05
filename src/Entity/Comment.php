@@ -5,12 +5,21 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Comment\CollectionPostController;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        'get',
+        'post' => [
+            'path' => '/posts/{id}/comments',
+            'controller' => CollectionPostController::class,
+        ],
+    ],
+)]
 class Comment
 {
     #[ORM\Id]
