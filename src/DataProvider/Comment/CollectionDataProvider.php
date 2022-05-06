@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\DataProvider\Comment;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\ContextAwareQueryResultCollectionExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use App\DataProvider\AbstractCollectionDataProvider;
 use App\Entity\Comment;
 use App\Repository\CommentRepository;
-use Doctrine\ORM\QueryBuilder;
 
-final class CollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
+/**
+ * @extends AbstractCollectionDataProvider<Comment>
+ */
+final class CollectionDataProvider extends AbstractCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    public function __construct(private iterable $collectionExtensions, private CommentRepository $commentRepository)
+    public function __construct(private CommentRepository $commentRepository)
     {
     }
 
@@ -32,27 +33,6 @@ final class CollectionDataProvider implements ContextAwareCollectionDataProvider
             ->andWhere('co.isBanned = false')
         ;
 
-        /** @var iterable<Comment> $comments */
-        $result = $this->getResult($qb, $resourceClass, $operationName, $context);
-
-        return $result;
-    }
-
-    private function getResult(QueryBuilder $qb, string $resourceClass, ?string $operationName, array $context): iterable
-    {
-        $resultExtension = null;
-
-        foreach ($this->collectionExtensions as $extension) {
-            $extension->applyToCollection($qb, $generator ??= new QueryNameGenerator(), $resourceClass, $operationName, $context);
-
-            if ($extension instanceof ContextAwareQueryResultCollectionExtensionInterface) {
-                $resultExtension = $extension;
-            }
-        }
-
-        /** @var iterable $result */
-        $result = $resultExtension ? $resultExtension->getResult($qb, $resourceClass, $operationName, $context) : $qb->getQuery()->getResult();
-
-        return $result;
+        return $this->getResult($qb, $resourceClass, $operationName, $context);
     }
 }
