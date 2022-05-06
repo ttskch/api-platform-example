@@ -2,6 +2,12 @@ App\Entity\Post:
   attributes:
     route_prefix: /v1
 
+  collectionOperations:
+    get:
+      filters:
+        - post.search_filter
+    post: ~
+
   itemOperations:
     latest:
       method: get

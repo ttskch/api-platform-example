@@ -38,3 +38,19 @@ services:
         decorates: api_platform.iri_converter
         arguments:
             $routeNameResolver: '@api_platform.route_name_resolver'
+
+    #
+    # API Platform - Filters
+    # @see https://api-platform.com/docs/core/filters/
+    #
+
+    # Post
+
+    post.search_filter:
+        parent: api_platform.doctrine.orm.search_filter
+        arguments:
+            - title: partial
+              body: partial
+        tags: [api_platform.filter]
+        autowire: false
+        autoconfigure: false
