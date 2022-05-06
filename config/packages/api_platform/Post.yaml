@@ -1,6 +1,10 @@
 App\Entity\Post:
   attributes:
     route_prefix: /v1
+    normalization_context:
+      groups: [post:read]
+    denormalization_context:
+      groups: [post:write]
 
   collectionOperations:
     get:

@@ -1,0 +1,38 @@
+App\Entity\Post:
+  attributes:
+    id:
+      groups:
+        - post:read
+        - comment:read
+    title:
+      groups:
+        - post:read
+        - post:write
+        - comment:read
+    body:
+      groups:
+        - post:read
+        - post:write
+        - comment:read
+    author:
+      groups:
+        - post:read
+        - post:write
+        - comment:read
+    comments:
+      groups:
+        - post:read
+        - post:write
+
+App\Entity\Post\Author:
+  attributes:
+    name:
+      groups:
+        - post:read
+        - post:write
+        - comment:read
+    birthDate:
+      groups:
+        - post:read
+        - post:write
+        - comment:read

@@ -1,6 +1,10 @@
 App\Entity\Comment:
   attributes:
     route_prefix: /v1
+    normalization_context:
+      groups: [comment:read]
+    denormalization_context:
+      groups: [comment:write]
 
   collectionOperations:
     get:

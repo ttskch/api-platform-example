@@ -1,0 +1,15 @@
+App\Entity\Comment:
+  attributes:
+    id:
+      groups:
+        - comment:read
+        - post:read
+    post:
+      groups:
+        - comment:read
+        - comment:write
+    body:
+      groups:
+        - comment:read
+        - comment:write
+        - post:read

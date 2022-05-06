@@ -17,6 +17,11 @@ framework:
     php_errors:
         log: true
 
+    # @see https://api-platform.com/docs/core/serialization/#configuration
+    serializer:
+        mapping:
+            paths: ['%kernel.project_dir%/config/packages/serializer']
+
 when@test:
     framework:
         test: true
