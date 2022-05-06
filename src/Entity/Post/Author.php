@@ -25,6 +25,7 @@ class Author
     #[ApiProperty(attributes: [
         'openapi_context' => [
             'description' => '投稿者の生年月日',
+            'format' => 'date',
         ],
     ])]
     private ?\DateTimeInterface $birthDate = null;
