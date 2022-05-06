@@ -21,4 +21,4 @@ App\Entity\Comment:
       controller: App\Controller\Comment\ItemBanController
       input: false
       openapi_context:
-        description: 'Creates a Comment resource. #withoutRequestBody'
+        description: 'Creates a Comment resource. #withoutRequestBody #withoutLinks'
