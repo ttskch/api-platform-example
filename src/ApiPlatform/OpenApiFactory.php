@@ -68,6 +68,26 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)->withResponses($responses)));
                 }
             }
+
+            // remove id parameter in operations which include "#withoutIdentifier" in description from API Doc
+            foreach (PathItem::$methods as $method) {
+                $getter = 'get'.ucfirst(strtolower($method));
+                $setter = 'with'.ucfirst(strtolower($method));
+                /** @var Operation|null $operation */
+                $operation = $pathItem->$getter();
+                if ($operation && preg_match('/#withoutIdentifier/', $operation->getDescription())) {
+                    /** @var Parameter[] $parameters */
+                    $parameters = $operation->getParameters();
+                    foreach ($parameters as $i => $parameter) {
+                        if (preg_match('/identifier/i', $parameter->getDescription())) {
+                            unset($parameters[$i]);
+                            break;
+                        }
+                    }
+                    $description = trim(strval(preg_replace('/#withoutIdentifier/', '', $operation->getDescription())));
+                    $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)->withParameters(array_values($parameters))));
+                }
+            }
         }
 
         return $openApi;

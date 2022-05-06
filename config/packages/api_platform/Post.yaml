@@ -8,10 +8,14 @@ App\Entity\Post:
       path: /posts/latest
       controller: App\Controller\Post\ItemLatestController
       read: false
+      openapi_context:
+        description: 'Retrieves the latest Post resource. #withoutIdentifier'
     putLatest:
       method: put
       path: /posts/latest
       controller: App\Controller\Post\ItemPutLatestController
       read: false
+      openapi_context:
+        description: 'Replaces the latest Post resource. #withoutIdentifier'
     patch: ~
     delete: ~
