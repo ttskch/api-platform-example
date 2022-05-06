@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Post\Author;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +26,10 @@ class Post
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $body = null;
 
+    #[ORM\Embedded(class: Author::class)]
+    #[Assert\Valid]
+    private Author $author;
+
     /**
      * @var Collection<int, Comment>
      */
@@ -33,6 +38,7 @@ class Post
 
     public function __construct()
     {
+        $this->author = new Author();
         $this->comments = new ArrayCollection();
     }
 
@@ -61,6 +67,18 @@ class Post
     public function setBody(?string $body): self
     {
         $this->body = $body;
+
+        return $this;
+    }
+
+    public function getAuthor(): Author
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(Author $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
