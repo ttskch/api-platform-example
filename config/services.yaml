@@ -33,3 +33,8 @@ services:
     App\ApiPlatform\OpenApiFactory:
         decorates: api_platform.openapi.factory
         autoconfigure: false
+
+    App\ApiPlatform\IriConverter:
+        decorates: api_platform.iri_converter
+        arguments:
+            $routeNameResolver: '@api_platform.route_name_resolver'

@@ -3,7 +3,8 @@ App\Entity\Comment:
     route_prefix: /v1
 
   collectionOperations:
-    get: ~
+    get:
+      path: /posts/{id}/comments
     post:
       path: /posts/{id}/comments
       controller: App\Controller\Comment\CollectionPostController
