@@ -20,9 +20,11 @@ App\Entity\Post:
         - post:write
         - comment:read
     comments:
+      max_depth: 1
       groups:
         - post:read
         - post:write
+        - comment:read
 
 App\Entity\Post\Author:
   attributes:

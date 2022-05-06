@@ -5,9 +5,11 @@ App\Entity\Comment:
         - comment:read
         - post:read
     post:
+      max_depth: 1
       groups:
         - comment:read
         - comment:write
+        - post:read
     body:
       groups:
         - comment:read

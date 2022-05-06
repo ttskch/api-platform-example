@@ -42,6 +42,11 @@ services:
         arguments:
             $routeNameResolver: '@api_platform.route_name_resolver'
 
+    # @see https://stackoverflow.com/questions/51281168/how-to-globally-define-configuration-of-serializer-used-in-api-platform
+    App\ApiPlatform\MaxDepthEnabledSerializerContextBuilder:
+        decorates: api_platform.serializer.context_builder
+        autoconfigure: false
+
     #
     # API Platform - Filters
     # @see https://api-platform.com/docs/core/filters/
