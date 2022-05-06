@@ -5,6 +5,14 @@ App\Entity\Comment:
   collectionOperations:
     get:
       path: /posts/{id}/comments
+      openapi_context:
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: 投稿ID
     post:
       path: /posts/{id}/comments
       controller: App\Controller\Comment\CollectionPostController
