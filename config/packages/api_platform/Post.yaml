@@ -6,8 +6,12 @@ App\Entity\Post:
     latest:
       method: get
       path: /posts/latest
+      controller: App\Controller\Post\ItemLatestController
+      read: false
     putLatest:
       method: put
       path: /posts/latest
+      controller: App\Controller\Post\ItemPutLatestController
+      read: false
     patch: ~
     delete: ~
