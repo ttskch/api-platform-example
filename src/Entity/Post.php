@@ -19,10 +19,16 @@ class Post
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    /**
+     * 投稿のタイトル
+     */
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
     private string $title = '';
 
+    /**
+     * 投稿の本文
+     */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $body = null;
 
@@ -31,6 +37,8 @@ class Post
     private Author $author;
 
     /**
+     * 投稿に対するコメント
+     *
      * @var Collection<int, Comment>
      */
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]

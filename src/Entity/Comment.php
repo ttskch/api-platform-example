@@ -16,15 +16,24 @@ class Comment
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    /**
+     * コメント先の投稿
+     */
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     private ?Post $post = null;
 
+    /**
+     * コメントの本文
+     */
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
     private string $body = '';
 
+    /**
+     * BANされているかどうか
+     */
     #[ORM\Column(type: 'boolean')]
     private bool $isBanned = false;
 

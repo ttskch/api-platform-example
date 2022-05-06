@@ -2,20 +2,6 @@ App\Entity\Post:
   attributes:
     route_prefix: /v1
 
-  properties:
-    title:
-      attributes:
-        openapi_context:
-          description: 投稿のタイトル
-    body:
-      attributes:
-        openapi_context:
-          description: 投稿の本文
-    comments:
-      attributes:
-        openapi_context:
-          description: 投稿に対するコメント
-
   collectionOperations:
     get:
       filters:

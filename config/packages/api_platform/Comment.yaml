@@ -2,20 +2,6 @@ App\Entity\Comment:
   attributes:
     route_prefix: /v1
 
-  properties:
-    post:
-      attributes:
-        openapi_context:
-          description: コメント先の投稿
-    body:
-      attributes:
-        openapi_context:
-          description: コメントの本文
-    isBanned:
-      attributes:
-        openapi_context:
-          description: BANされているかどうか
-
   collectionOperations:
     get:
       path: /posts/{id}/comments

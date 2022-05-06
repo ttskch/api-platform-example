@@ -11,20 +11,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Embeddable]
 class Author
 {
+    /**
+     * 投稿者の名前
+     */
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
-    #[ApiProperty(attributes: [
-        'openapi_context' => [
-            'description' => '投稿者の名前',
-        ],
-    ])]
     private string $name = '';
 
+    /**
+     * 投稿者の生年月日
+     */
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
     #[ApiProperty(attributes: [
         'openapi_context' => [
-            'description' => '投稿者の生年月日',
             'format' => 'date',
         ],
     ])]
