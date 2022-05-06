@@ -29,6 +29,9 @@ services:
     # API Platform
     #
 
+    # @see https://api-platform.com/docs/core/operation-path-naming/
+    App\ApiPlatform\LowerCamelCasePathSegmentNameGenerator: ~
+
     # @see https://api-platform.com/docs/core/openapi/#overriding-the-openapi-specification
     App\ApiPlatform\OpenApiFactory:
         decorates: api_platform.openapi.factory

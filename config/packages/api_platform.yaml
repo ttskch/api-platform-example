@@ -7,3 +7,4 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+    path_segment_name_generator: App\ApiPlatform\LowerCamelCasePathSegmentNameGenerator
