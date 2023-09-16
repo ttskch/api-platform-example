@@ -1,31 +1,39 @@
-App\Entity\Post:
-  attributes:
-    route_prefix: /v1
-    normalization_context:
+properties:
+  App\Entity\Post\Author:
+    birthDate:
+      openapiContext:
+        format: date
+
+resources:
+  App\Entity\Post:
+    routePrefix: /v1
+    normalizationContext:
       groups: [post:read]
-    denormalization_context:
+    denormalizationContext:
       groups: [post:write]
 
-  collectionOperations:
-    get:
-      filters:
-        - post.search_filter
-    post: ~
+    operations:
 
-  itemOperations:
-    latest:
-      method: get
-      path: /posts/latest
-      controller: App\Controller\Post\ItemLatestController
-      read: false
-      openapi_context:
-        description: 'Retrieves the latest Post resource. #withoutIdentifier'
-    putLatest:
-      method: put
-      path: /posts/latest
-      controller: App\Controller\Post\ItemPutLatestController
-      read: false
-      openapi_context:
-        description: 'Replaces the latest Post resource. #withoutIdentifier'
-    patch: ~
-    delete: ~
+      posts_getCollection:
+        class: ApiPlatform\Metadata\GetCollection
+        filters:
+          - post.search_filter
+
+      posts_post:
+        class: ApiPlatform\Metadata\Post
+
+      posts_getLatest:
+        class: ApiPlatform\Metadata\Get
+        uriTemplate: /posts/latest
+        provider: App\State\Provider\Post\GetLatestProvider
+
+      posts_putLatest:
+        class: ApiPlatform\Metadata\Put
+        uriTemplate: /posts/latest
+        provider: App\State\Provider\Post\GetLatestProvider
+
+      posts_patch:
+        class: ApiPlatform\Metadata\Patch
+
+      posts_delete:
+        class: ApiPlatform\Metadata\Delete

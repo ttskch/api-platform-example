@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\ApiPlatform;
 
-use ApiPlatform\Core\Operation\PathSegmentNameGeneratorInterface;
-use ApiPlatform\Core\Util\Inflector;
+use ApiPlatform\Operation\PathSegmentNameGeneratorInterface;
+use ApiPlatform\Util\Inflector;
 
 class LowerCamelCasePathSegmentNameGenerator implements PathSegmentNameGeneratorInterface
 {

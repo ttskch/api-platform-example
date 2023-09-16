@@ -18,10 +18,13 @@ framework:
     php_errors:
         log: true
 
-    # @see https://api-platform.com/docs/core/serialization/#configuration
     serializer:
+        # @see https://api-platform.com/docs/core/serialization/#configuration
         mapping:
             paths: ['%kernel.project_dir%/config/packages/serializer']
+        # @see https://symfony.com/doc/current/serializer.html#serializer-context
+        default_context:
+            enable_max_depthe: true
 
 when@test:
     framework:

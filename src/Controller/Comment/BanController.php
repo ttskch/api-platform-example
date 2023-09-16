@@ -9,10 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class ItemBanController extends AbstractController
+class BanController extends AbstractController
 {
-    public function __invoke(Comment $data): Comment
+    public function __invoke(Comment $comment): Comment
     {
-        return $data->setIsBanned(true);
+        return $comment->setIsBanned(true);
     }
 }

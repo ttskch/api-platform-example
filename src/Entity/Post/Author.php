@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity\Post;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,11 +22,6 @@ class Author
      */
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
-    #[ApiProperty(attributes: [
-        'openapi_context' => [
-            'format' => 'date',
-        ],
-    ])]
     private ?\DateTimeInterface $birthDate = null;
 
     public function getName(): string

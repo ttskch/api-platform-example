@@ -4,92 +4,57 @@ declare(strict_types=1);
 
 namespace App\ApiPlatform;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\Model\Operation;
-use ApiPlatform\Core\OpenApi\Model\Parameter;
-use ApiPlatform\Core\OpenApi\Model\PathItem;
-use ApiPlatform\Core\OpenApi\Model\Response;
-use ApiPlatform\Core\OpenApi\OpenApi;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\Model\Paths;
+use ApiPlatform\OpenApi\OpenApi;
 
-class OpenApiFactory implements OpenApiFactoryInterface
+final class OpenApiFactory implements OpenApiFactoryInterface
 {
-    public function __construct(private OpenApiFactoryInterface $decorated)
-    {
+    public function __construct(private OpenApiFactoryInterface $decorated) {
     }
 
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = $this->decorated->__invoke($context);
 
+        $paths = $openApi->getPaths()->getPaths();
+        $fixedPaths = new Paths();
+
         /**
          * @var string   $path
          * @var PathItem $pathItem
          */
-        foreach ($openApi->getPaths()->getPaths() as $path => $pathItem) {
-            // hide operations which include "#hidden" in description from API Doc
-            if ($pathItem->getGet() && preg_match('/#hidden/', $pathItem->getGet()->getDescription())) {
-                $openApi->getPaths()->addPath($path, $pathItem->withGet(null));
-            }
+        foreach ($paths as $path => $pathItem) {
+            $fixedPathItem = new PathItem();
 
-            // remove request body in operations witch include "#withoutRequestBody" in description from API Doc
             foreach (PathItem::$methods as $method) {
-                $getter = 'get'.ucfirst(strtolower($method));
-                $setter = 'with'.ucfirst(strtolower($method));
-                /** @var Operation|null $operation */
+                $getter = sprintf('get%s', ucfirst(strtolower($method)));
+                $setter = sprintf('with%s', ucfirst(strtolower($method)));
+
                 $operation = $pathItem->$getter();
-                if ($operation && preg_match('/#withoutRequestBody/', $operation->getDescription())) {
-                    // use reflection because $operation->requestBody cannot be reset to null except in the constructor
-                    $reflectionProperty = new \ReflectionProperty($operation, 'requestBody');
-                    $reflectionProperty->setAccessible(true);
-                    $reflectionProperty->setValue($operation, null);
-                    /** @var Parameter[] $parameters */
-                    $description = trim(strval(preg_replace('/#withoutRequestBody/', '', $operation->getDescription())));
-                    $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)));
+                assert($operation instanceof Operation || null === $operation);
+
+                // hide operations which include "#hidden" in description from API Doc
+                if ($operation && preg_match('/#hidden/', strval($operation->getDescription()))) {
+                    continue;
+                }
+
+                // remove request body in operations witch include "#noRequestBody" in description from API Doc
+                if ($operation && preg_match('/#noRequestBody/', strval($operation->getDescription()))) {
+                    $description = strval(preg_replace('/\s*#noRequestBody\s*/', '', strval($operation->getDescription())));
+                    $operation = $operation->withRequestBody()->withDescription($description);
+                }
+
+                if ($operation) {
+                    $fixedPathItem = $fixedPathItem->$setter($operation);
                 }
             }
 
-            // remove links in operations which include "#withoutLinks" in description from API Doc
-            foreach (PathItem::$methods as $method) {
-                $getter = 'get'.ucfirst(strtolower($method));
-                $setter = 'with'.ucfirst(strtolower($method));
-                /** @var Operation|null $operation */
-                $operation = $pathItem->$getter();
-                if ($operation && preg_match('/#withoutLinks/', $operation->getDescription())) {
-                    $responses = [];
-                    /** @var Response $response */
-                    foreach ($operation->getResponses() as $statusCode => $response) {
-                        // use reflection because $operation->requestBody cannot be reset to null except in the constructor
-                        $reflectionProperty = new \ReflectionProperty($response, 'links');
-                        $reflectionProperty->setAccessible(true);
-                        $reflectionProperty->setValue($response, null);
-                        $responses[$statusCode] = $response;
-                    }
-                    $description = trim(strval(preg_replace('/#withoutLinks/', '', $operation->getDescription())));
-                    $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)->withResponses($responses)));
-                }
-            }
-
-            // remove id parameter in operations which include "#withoutIdentifier" in description from API Doc
-            foreach (PathItem::$methods as $method) {
-                $getter = 'get'.ucfirst(strtolower($method));
-                $setter = 'with'.ucfirst(strtolower($method));
-                /** @var Operation|null $operation */
-                $operation = $pathItem->$getter();
-                if ($operation && preg_match('/#withoutIdentifier/', $operation->getDescription())) {
-                    /** @var Parameter[] $parameters */
-                    $parameters = $operation->getParameters();
-                    foreach ($parameters as $i => $parameter) {
-                        if (preg_match('/identifier/i', $parameter->getDescription())) {
-                            unset($parameters[$i]);
-                            break;
-                        }
-                    }
-                    $description = trim(strval(preg_replace('/#withoutIdentifier/', '', $operation->getDescription())));
-                    $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)->withParameters(array_values($parameters))));
-                }
-            }
+            $fixedPaths->addPath($path, $fixedPathItem);
         }
 
-        return $openApi;
+        return $openApi->withPaths($fixedPaths);
     }
 }

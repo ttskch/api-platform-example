@@ -1,37 +1,43 @@
-App\Entity\Comment:
-  attributes:
-    route_prefix: /v1
-    normalization_context:
+resources:
+  App\Entity\Comment:
+    routePrefix: /v1
+    normalizationContext:
       groups: [comment:read]
-    denormalization_context:
+    denormalizationContext:
       groups: [comment:write]
 
-  collectionOperations:
-    get:
-      path: /posts/{id}/comments
-      openapi_context:
-        parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: 投稿ID
-    post:
-      path: /posts/{id}/comments
-      controller: App\Controller\Comment\CollectionPostController
+    operations:
 
-  itemOperations:
-    get:
-      controller: ApiPlatform\Core\Action\NotFoundAction
-      read: false
-      output: false
-      openapi_context:
-        description: '#hidden'
-    ban:
-      method: put
-      path: /comments/{id}/ban
-      controller: App\Controller\Comment\ItemBanController
-      input: false
-      openapi_context:
-        description: 'Creates a Comment resource. #withoutRequestBody #withoutLinks'
+      comments_getCollection:
+        class: ApiPlatform\Metadata\GetCollection
+        uriTemplate: /posts/{postId}/comments
+        uriVariables:
+          postId:
+            fromClass: App\Entity\Post
+            toProperty: post
+        provider: App\State\Provider\Comment\GetCollectionProvider
+
+      comments_post:
+        class: ApiPlatform\Metadata\Post
+        uriTemplate: /posts/{postId}/comments
+        uriVariables:
+          postId:
+            fromClass: App\Entity\Post
+            toProperty: post
+        provider: App\State\Provider\Comment\PostProvider
+
+      comments_get:
+        class: ApiPlatform\Metadata\Get
+        controller: ApiPlatform\Action\NotFoundAction
+        read: false
+        output: false
+        openapi:
+          description: '#hidden'
+
+      comments_ban:
+        class: ApiPlatform\Metadata\Put
+        uriTemplate: /comments/{id}/ban
+        controller: App\Controller\Comment\BanController
+        input: false
+        openapi:
+          description: 'Creates a Comment resource. #noRequestBody'
